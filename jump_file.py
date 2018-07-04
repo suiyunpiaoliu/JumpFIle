@@ -41,6 +41,7 @@ class JumpFileCommand(sublime_plugin.TextCommand):
 				for file in files:
 					if str in file:
 						new_path = file
+						matched = True
 						break
 			if not matched:
 				sublime.error_message("No file found")

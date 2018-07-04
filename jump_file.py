@@ -37,20 +37,27 @@ class JumpFileCommand(sublime_plugin.TextCommand):
 		for folder in project_folders:
 			files += self.files(folder,config)
 
-		new_path = self.matchFile(new_path, files)
+		self.new_paths = self.matchFile(new_path, files)
 		
-		if not new_path:
-			new_path = self.matchFile(str, files)
+		self.new_paths += self.matchFile(str, files)
 
-		if not new_path:
+		if len(self.new_paths) == 0:
 			sublime.error_message("No file found")
+		elif len(self.new_paths) == 1:
+			self.view.window().open_file(self.new_paths[0])
 		else:
-			self.view.window().open_file(new_path)
+			self.view.window().show_quick_panel(self.new_paths, self.open_file)
 
+	def open_file(self, selected_index):
+ 		if selected_index != -1:
+ 			file = self.new_paths[selected_index]
+ 			self.view.window().open_file(file)
 	def matchFile(self,path,files):
+		fileList = []
 		for file in files:
 			if path in file:
-				return file
+				fileList.append(file)
+		return fileList
 
 	def files(self,file_dir,config):   
 		L=[]   
